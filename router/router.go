@@ -7,10 +7,12 @@ import (
 	"strings"
 )
 
+type Key string
+
 type Handle func(http.ResponseWriter, *http.Request)
 
 const (
-	key = "params"
+	key = Key("params")
 )
 
 type Router struct {
@@ -30,7 +32,6 @@ func (rt *Router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	if handler := node.methods[req.Method]; handler != nil {
 		ctx := context.WithValue(req.Context(), key, params)
 		handler(w, req.WithContext(ctx))
-		// handler(w, req, params)
 		return
 	}
 	http.NotFound(w, req)
