@@ -7,8 +7,6 @@ import (
 	"strings"
 )
 
-type Key string
-
 type Handle func(http.ResponseWriter, *http.Request)
 
 const (
