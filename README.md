@@ -1,2 +1,2 @@
 # goutils
-Practice area for Go utilities
+Practice work on go features and functionalities.
