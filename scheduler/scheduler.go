@@ -31,8 +31,8 @@ func GetDefaultScheduler() *Scheduler {
 	return defaultScheduler
 }
 
-// Add starts goroutine which constantly calls provided job with interval delay
-func (s *Scheduler) Add(ctx context.Context, j Job, interval time.Duration) {
+// Schedule starts goroutine which constantly calls provided job with interval delay
+func (s *Scheduler) Schedule(ctx context.Context, j Job, interval time.Duration) {
 	ctx, cancel := context.WithCancel(ctx)
 	s.cancellations = append(s.cancellations, cancel)
 
