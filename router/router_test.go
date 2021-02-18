@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
-	"net/url"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -15,7 +14,7 @@ func TestInitRouter(t *testing.T) {
 
 	r := NewRouter()
 	t.Run("it returns a string with status OK", func(t *testing.T) {
-		r.Handle("GET", "/", func(rw http.ResponseWriter, r *http.Request, v url.Values) {
+		r.Handle("GET", "/", func(rw http.ResponseWriter, r *http.Request) {
 			fmt.Fprint(rw, "Hi you just landed at the base")
 		})
 
@@ -31,8 +30,8 @@ func TestInitRouter(t *testing.T) {
 	})
 
 	t.Run("it returns a greeting with passed name", func(t *testing.T) {
-		r.GET("/users/:name", func(rw http.ResponseWriter, r *http.Request, v url.Values) {
-			fmt.Fprintf(rw, "Hi %s", v["name"][0])
+		r.GET("/users/:name", func(rw http.ResponseWriter, r *http.Request) {
+			fmt.Fprintf(rw, "Hi %s", GetParam(r, "name"))
 		})
 
 		req := httptest.NewRequest("GET", "/users/John", nil)

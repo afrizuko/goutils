@@ -1,22 +1,26 @@
 package router
 
 import (
+	"context"
 	"net/http"
 	"net/url"
 	"strings"
 )
 
-type key string
+type Key string
 
-type Handle func(http.ResponseWriter, *http.Request, url.Values)
+type Handle func(http.ResponseWriter, *http.Request)
+
+const (
+	key = "params"
+)
 
 type Router struct {
 	tree *node
-	key  key
 }
 
 func NewRouter() *Router {
-	return &Router{key: "params",
+	return &Router{
 		tree: &node{component: "/", isNamedParam: false, methods: make(map[string]Handle)},
 	}
 }
@@ -26,16 +30,23 @@ func (rt *Router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	params := req.Form
 	node, _ := rt.tree.traverse(strings.Split(req.URL.Path, "/")[1:], params)
 	if handler := node.methods[req.Method]; handler != nil {
-		// ctx := context.WithValue(req.Context(), rt.key, params)
-		// handler(w, req.WithContext(ctx), params)
-		handler(w, req, params)
+		ctx := context.WithValue(req.Context(), key, params)
+		handler(w, req.WithContext(ctx))
+		// handler(w, req, params)
 		return
 	}
 	http.NotFound(w, req)
 }
 
 func GetParam(req *http.Request, field string) string {
-	return req.Context().Value(field).(string)
+	vals := req.Context().Value(key).(url.Values)
+	if vals == nil {
+		return ""
+	}
+	if len(vals) < 1 {
+		return ""
+	}
+	return vals[field][0]
 }
 
 func (rt *Router) Handle(method, path string, handler Handle) {
