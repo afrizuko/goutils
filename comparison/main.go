@@ -1,12 +1,11 @@
 package main
 
-import (
-	"log"
-	"os"
-)
+import "fmt"
 
 func main() {
-	log.Println("Hello World!")
-	l := log.New(os.Stderr, "", 0)
-	l.Println("Hello World from l")
+
+	name := "Jesus Is Lord"
+
+	fmt.Println(string(name[0]))
+	fmt.Println(string([]rune(name)[0]))
 }

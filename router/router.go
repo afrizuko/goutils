@@ -38,7 +38,10 @@ func (rt *Router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 }
 
 func GetParam(req *http.Request, field string) string {
-	vals := req.Context().Value(key).(url.Values)
+	vals, ok := req.Context().Value(key).(url.Values)
+	if !ok {
+		return ""
+	}
 	if vals == nil || len(vals) == 0 {
 		return ""
 	}
