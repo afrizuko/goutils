@@ -20,6 +20,9 @@ func (q Employee) String() string {
 
 func TestMQClient(t *testing.T) {
 
+	if testing.Short() {
+		t.Skip()
+	}
 	addr := os.Getenv("BROKER_ADDR")
 	queueName := "/helloQueue"
 
